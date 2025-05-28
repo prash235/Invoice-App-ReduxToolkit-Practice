@@ -4,7 +4,7 @@ import { Filter, Plus } from "lucide-react";
 
 function Header() {
   return (
-    <Header className="flex items-center justify-between mb-8">
+    <div className="flex items-center justify-between">
       <div>
         <h1 className="text-3xl font-bold text-white mb-2">Invoices</h1>
         <p className="text-slate-400">There are total 0 invoices</p>
@@ -32,7 +32,8 @@ function Header() {
           <span>new invoice</span>
         </button>
       </div>
-    </Header>
+    </div>
+     
   );
 }
 
