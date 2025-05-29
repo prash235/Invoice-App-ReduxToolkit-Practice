@@ -1,13 +1,22 @@
 import React from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { Filter, Plus } from "lucide-react";
+import { useSelector } from "react-redux";
 
-function Header() {
+const status = ["all", "paid", "pending", "draft"];
+
+function Header({ onNewInvoice }) {
+  const { invoices, filter } = useSelector((state) => state.invoices);
+  
   return (
     <div className="flex items-center justify-between">
       <div>
         <h1 className="text-3xl font-bold text-white mb-2">Invoices</h1>
-        <p className="text-slate-400">There are total 0 invoices</p>
+        <p className="text-slate-400">
+          {invoices.length === 0
+            ? "No Invoices"
+            : `There are total ${invoices.length} invoices`}
+        </p>
       </div>
 
       <div className="flex items-center space-x-4">
@@ -18,12 +27,30 @@ function Header() {
           </Menu.Button>
 
           <Menu.Items className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-lg p-2 z-10">
-            <Menu.Item className='w-full text-left px-4 py-2 rounded-lg capitalize'>Status</Menu.Item>
+            {status.map((s) => (
+              <Menu.Item
+                key={s}
+                className="w-full text-left px-4 py-2 rounded-lg capitalize"
+              >
+                {({ active }) => (
+                  <button
+                    className={`${
+                      active ? "bg-slate-700" : ""
+                    } w-full text-left px-4 py-2 rounded-lg capitalize ${
+                      filter === s ? "text-violet-500" : "text-white"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                )}
+              </Menu.Item>
+            ))}
           </Menu.Items>
         </Menu>
 
         <button
           type="button"
+          onClick={onNewInvoice}
           className="bg-violet-500 hover:bg-violet-600 text-white rounded-full flex items-center space-x-2"
         >
           <div className="bg-white rounded-full p-2">
@@ -33,7 +60,6 @@ function Header() {
         </button>
       </div>
     </div>
-     
   );
 }
 
