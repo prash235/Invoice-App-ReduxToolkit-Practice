@@ -64,7 +64,7 @@ const invoiceSlice = createSlice({
 
     setSelectedInvoice: (state, action) => {
       state.selectedInvoice = action.payload;
-      state.isFormOpen = false
+      state.isFormOpen = false;
     },
 
     toggleForm: (state) => {
@@ -73,9 +73,51 @@ const invoiceSlice = createSlice({
         state.selectedInvoice = null;
       }
     },
+
+    markAsPaid: (state, action) => {
+      const invoice = state.invoices.find((inv) => inv.id === action.payload);
+
+      if (invoice) {
+        invoice.status = "paid";
+        state.selectedInvoice = null;
+        state.isFormOpen = false;
+        saveState(state);
+      }
+    },
+
+    deleteInvoice: (state, action) => {
+      state.invoices = state.invoices.filter(
+        (inv) => inv.id !== action.payload
+      );
+      state.selectedInvoice = null;
+      saveState(state);
+    },
+
+    updateInvoice: (state, action) => {
+      const updatedInvoice = {
+        ...action.payload,
+        amount: calculateAmount(action.payload.items),
+      };
+
+      const index = state.invoices.findIndex((inv)=> inv.id === updatedInvoice.id);
+      if(index !== -1){
+        state.invoices[index]=updatedInvoice
+      }
+      state.selectedInvoice = null;
+      state.isFormOpen = false;
+      saveState(state);
+    },
   },
 });
 
-export const { toggleForm, addInvoice, setFilter, setSelectedInvoice } = invoiceSlice.actions;
+export const {
+  toggleForm,
+  addInvoice,
+  setFilter,
+  setSelectedInvoice,
+  markAsPaid,
+  deleteInvoice,
+  updateInvoice
+} = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

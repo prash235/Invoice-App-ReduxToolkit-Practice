@@ -1,10 +1,11 @@
 import { Plus, Trash2, X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addInvoice, toggleForm } from "../store/InvoiceSlice";
-import { addDays, format, formatDate } from "date-fns";
+import { addInvoice, toggleForm, updateInvoice } from "../store/InvoiceSlice";
+import { addDays, format } from "date-fns";
+import { el } from "date-fns/locale";
 
-function InvoiceForm() {
+function InvoiceForm({ invoice }) {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState(() => {
@@ -34,6 +35,16 @@ function InvoiceForm() {
     };
   });
 
+  // if (invoice) {
+  //   return { ...invoice };
+  // }
+
+  useEffect(()=>{
+    if(invoice){
+      setFormData(invoice)
+    }
+  },[invoice])
+
   // console.log("form data", formData)
 
   const addItem = () => {
@@ -52,8 +63,11 @@ function InvoiceForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    dispatch(addInvoice(formData));
+    if(invoice){
+      dispatch(updateInvoice(formData));
+    } else{
+      dispatch(addInvoice(formData));
+    }
   };
 
   const updateItem = (index, field, value) => {
@@ -395,7 +409,7 @@ function InvoiceForm() {
               type="submit"
               className=" bg-violet-500 hover:bg-violet-600 rounded-lg p-3 text-white"
             >
-              Create Invoice
+              {invoice ? "Save Changes" : "Create Invoice"}
             </button>
           </div>
         </form>

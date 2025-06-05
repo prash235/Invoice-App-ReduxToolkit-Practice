@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./Header";
 import InvoiceList from "./InvoiceList";
 import InvoiceForm from "./InvoiceForm";
@@ -12,6 +12,8 @@ function AppContent() {
     (state) => state.invoices
   );
 
+
+
   const handleNewInvoice = () => {
     dispatch(toggleForm());
   };
@@ -19,8 +21,8 @@ function AppContent() {
     <div className="bg-slate-900 text-white min-h-screen">
       <div className="max-w-5xl mx-auto py-12 px-4">
         <Header onNewInvoice={handleNewInvoice} />
-        {selectedInvoice ? <InvoiceDetails  /> : <InvoiceList />}
-        {isFormOpen && <InvoiceForm />}
+        {selectedInvoice ? <InvoiceDetails invoice={selectedInvoice}  /> : <InvoiceList />}
+        {isFormOpen && <InvoiceForm invoice={selectedInvoice} />}
         {/* <InvoiceList />
         {isFormOpen && <InvoiceForm />} */}
       </div>

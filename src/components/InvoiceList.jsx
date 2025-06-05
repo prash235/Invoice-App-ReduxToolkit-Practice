@@ -47,7 +47,7 @@ function InvoiceList() {
               <div
                 className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${
                   invoice.status === "paid"
-                    ? " bg-green-900/20 text-green-50"
+                    ? "bg-green-900/20 text-green-50"
                     : invoice.status === "pending"
                     ? "bg-orange-900/20 text-orange-500"
                     : "bg-slate-700/50 text-slate-400"
@@ -56,15 +56,15 @@ function InvoiceList() {
                 <div
                   className={`w-2 h-2 rounded-full ${
                     invoice.status === "paid"
-                      ? "bg-green-500 "
+                      ? "bg-green-500"
                       : invoice.status === "pending"
                       ? "bg-orange-500"
                       : "bg-slate-400"
                   }`}
-                >
-                  <span className="capitalize">{invoice.status}</span>
-                </div>
+                ></div>
+                <span className="capitalize">{invoice.status}</span>
               </div>
+
               <ChevronRight className="text-violet-500 " />
             </div>
           </div>
