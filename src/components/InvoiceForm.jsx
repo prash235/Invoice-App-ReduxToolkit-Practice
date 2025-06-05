@@ -1,7 +1,7 @@
 import { Plus, Trash2, X } from "lucide-react";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { toggleForm } from "../store/InvoiceSlice";
+import { addInvoice, toggleForm } from "../store/InvoiceSlice";
 import { addDays, format, formatDate } from "date-fns";
 
 function InvoiceForm() {
@@ -37,23 +37,35 @@ function InvoiceForm() {
   // console.log("form data", formData)
 
   const addItem = () => {
-    setFormData({...formData,items: [...formData.items, {name: "", quantity : 0, price: 0, total: 0}]})
-  }
+    setFormData({
+      ...formData,
+      items: [...formData.items, { name: "", quantity: 0, price: 0, total: 0 }],
+    });
+  };
 
   const removeItem = (index) => {
-    setFormData({...formData, items : formData.items.filter((_,i)=>i !== index)})
-  }
+    setFormData({
+      ...formData,
+      items: formData.items.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+    dispatch(addInvoice(formData));
+  };
 
   const updateItem = (index, field, value) => {
-    const newItems = [...formData.items]
-    newItems[index][field] = value
-    if(field === "quantity" || field === "price"){
-      const qty = field === "quantity" ? value: newItems[index].quantity;
-      const price = field === "price" ? value: newItems[index].price;
-      newItems[index].total = qty*price;
+    const newItems = [...formData.items];
+    newItems[index][field] = value;
+    if (field === "quantity" || field === "price") {
+      const qty = field === "quantity" ? value : newItems[index].quantity;
+      const price = field === "price" ? value : newItems[index].price;
+      newItems[index].total = qty * price;
     }
-    setFormData({...formData, items: newItems})
-  }
+    setFormData({ ...formData, items: newItems });
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center overflow-y-auto px-4 py-8">
@@ -65,7 +77,7 @@ function InvoiceForm() {
           </button>
         </div>
 
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Bill From */}
           <div className="space-y-4">
             <h3 className="text-violet-500 font-bold">Bill From</h3>
@@ -259,8 +271,8 @@ function InvoiceForm() {
                 className="bg-slate-900 rounded-lg p-3 text-white"
                 required
                 value={formData.paymentTerms}
-                onChange={(e)=> {
-                  setFormData({...formData, paymentTerms: e.target.value })
+                onChange={(e) => {
+                  setFormData({ ...formData, paymentTerms: e.target.value });
                 }}
               >
                 <option>Net 30 Days</option>
@@ -315,49 +327,50 @@ function InvoiceForm() {
               </button>
             </div> */}
             {formData.items.map((item, index) => (
-               <div className="grid grid-cols-12 gap-4 items-center" key={index}>
-              <input
-                type="text"
-                placeholder="Item Name"
-                className="bg-slate-900 rounded-lg p-3 col-span-5 text-white"
-                value={item.name}
-                onChange={(e) => {
-                  updateItem(index,'name',e.target.value)
-                }}
-              />
-              <input
-                type="number"
-                placeholder="Quantity"
-                className="bg-slate-900 rounded-lg p-3 col-span-2 text-white"
-                min="1"
-                required
-                value={item.quantity}
-                onChange={(e) => {
-                  updateItem(index,'quantity',parseInt(e.target.value) )
-                }}
-                
-              />
-              <input
-                type="number"
-                placeholder="Price"
-                className="bg-slate-900 rounded-lg p-3 col-span-2 text-white"
-                min="0"
-                step="0.01"
-                required
-                value={item.price}
-                onChange={(e) => {
-                  updateItem(index,'price',parseFloat(e.target.value))
-                }}
-              />
-              <div className="col-span-2  text-right ">${item.total.toFixed(2)}</div>
-              <button
-                type="button"
-                className="text-slate-400 hover:text-red-500"
-                onClick={()=> removeItem(index)}
-              >
-                <Trash2 size={20} className="text-white hover:text-red-500" />
-              </button>
-            </div> 
+              <div className="grid grid-cols-12 gap-4 items-center" key={index}>
+                <input
+                  type="text"
+                  placeholder="Item Name"
+                  className="bg-slate-900 rounded-lg p-3 col-span-5 text-white"
+                  value={item.name}
+                  onChange={(e) => {
+                    updateItem(index, "name", e.target.value);
+                  }}
+                />
+                <input
+                  type="number"
+                  placeholder="Quantity"
+                  className="bg-slate-900 rounded-lg p-3 col-span-2 text-white"
+                  min="1"
+                  required
+                  value={item.quantity}
+                  onChange={(e) => {
+                    updateItem(index, "quantity", parseInt(e.target.value));
+                  }}
+                />
+                <input
+                  type="number"
+                  placeholder="Price"
+                  className="bg-slate-900 rounded-lg p-3 col-span-2 text-white"
+                  min="0"
+                  step="0.01"
+                  required
+                  value={item.price}
+                  onChange={(e) => {
+                    updateItem(index, "price", parseFloat(e.target.value));
+                  }}
+                />
+                <div className="col-span-2  text-right ">
+                  ${item.total.toFixed(2)}
+                </div>
+                <button
+                  type="button"
+                  className="text-slate-400 hover:text-red-500"
+                  onClick={() => removeItem(index)}
+                >
+                  <Trash2 size={20} className="text-white hover:text-red-500" />
+                </button>
+              </div>
             ))}
 
             <button
@@ -379,7 +392,7 @@ function InvoiceForm() {
               Cancel
             </button>
             <button
-              type="button"
+              type="submit"
               className=" bg-violet-500 hover:bg-violet-600 rounded-lg p-3 text-white"
             >
               Create Invoice
