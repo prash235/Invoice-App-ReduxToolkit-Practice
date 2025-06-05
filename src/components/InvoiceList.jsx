@@ -1,9 +1,11 @@
 import { format, parseISO } from "date-fns/fp";
 import { ChevronRight } from "lucide-react";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedInvoice } from "../store/InvoiceSlice";
 
 function InvoiceList() {
+  const dispatch = useDispatch();
   const { invoices, filter } = useSelector((state) => state.invoices);
   console.log(invoices);
 
@@ -13,6 +15,10 @@ function InvoiceList() {
   });
 
   console.log(filteredInvoices);
+
+  const handleInvoiceClick = (invoice) => {
+    dispatch(setSelectedInvoice(invoice));
+  };
 
   return (
     <div className="space-y-4">
@@ -26,6 +32,7 @@ function InvoiceList() {
             className="bg-slate-800 rounded-lg flex items-center justify-between p-6 hover:bg-slate-700
         transition-colors duration-200 cursor-pointer"
             key={invoice.id}
+            onClick={() => handleInvoiceClick(invoice)}
           >
             <div className="flex items-center space-x-6">
               <span className="text-slate-400">{invoice.id}</span>
